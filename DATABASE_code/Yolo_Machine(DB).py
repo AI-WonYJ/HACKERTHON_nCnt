@@ -8,7 +8,7 @@ import pymysql
 from datetime import datetime
 
 # 변수 지정
-previous_time, standard_time, ncnt_people = 0, 0, 0
+previous_time, standard_time, DB_time, ncnt_people = 0, 0, 0, 0
 ksize = 30              # 블러 처리에 사용할 커널 크기
 
 # 사물 class
@@ -28,7 +28,7 @@ def sql_recorder(Now_people, Now_Time):
   conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="nCntDB", charset="utf8")
   cur=conn.cursor()
 #   cur.execute("CREATE  TABLE userTable (people_num INT, time char(30))")
-  cur.execute("INSERT INTO userTable VALUES('{0}', '{1}')".format(Now_people, Now_Time))
+  cur.execute("INSERT INTO userTable VALUES('{0}', '{1}')".format(Now_Time, Now_people))
   conn.commit()
   conn.close()
 
@@ -74,11 +74,12 @@ def yolo(frame, size, score_threshold, nms_threshold):
     return frame
 
 def machine():
-    global previous_time, ncnt_people, standard_time
+    global previous_time, ncnt_people, standard_time, DB_time
     moment_time = str(datetime.now())  # 현재시간 측정
     current_time = int(moment_time[14:16])  # 현재 분 값 저장
     #if previous_time != current_time:  # 기존 값과 다를 경우
     previous_time = current_time  # 기존 값에 새로운 분 값 저장
+    DB_time = moment_time[:19]
     standard_time = moment_time[11:19]  # 기준 시간 설정 (시, 분)
     # 웹캠으로 사진 찍기
     # if  current_time % 1 == 0:  # 1초마다 실행
@@ -106,7 +107,7 @@ def machine():
     frame = yolo(frame=frame, size=size_list[2], score_threshold=0.4, nms_threshold=0.4)  # 이미지 분석
     with open("nCnt.txt", "w", encoding = "utf8") as report_file:
         report_file.write("{0}/{1}".format(ncnt_people,standard_time))
-        sql_recorder(ncnt_people,standard_time) 
+        sql_recorder(ncnt_people, DB_time) 
         print(ncnt_people)
 
 
