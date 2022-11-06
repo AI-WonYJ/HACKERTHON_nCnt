@@ -116,7 +116,7 @@ def machine():
 
 conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="nCntDB", charset="utf8")
 cur=conn.cursor()
-cur.execute("CREATE  TABLE userTable (time char(30), people_num INT)")
+cur.execute("CREATE  TABLE userTable (datetime char(30), people_num INT)")
 conn.commit()
 conn.close()
 
