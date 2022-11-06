@@ -24,8 +24,8 @@ def check():
         standard_time = info_list[1]
         print("\n", line,"\n")
 
-def sqlmaker(Now_people, Now_Time):
-  conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="soloDB", charset="utf8")
+def sql_recorder(Now_people, Now_Time):
+  conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="nCntDB", charset="utf8")
   cur=conn.cursor()
   cur.execute("CREATE  TABLE userTable (people_num INT, time char(30))")
   cur.execute("INSERT INTO userTable VALUES('{0}', '{1}')".format(Now_people, Now_Time))
@@ -41,11 +41,12 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
+sql_recorder(int(ncnt_people,str(standard_time))) 
 
 @app.get("/", response_class=HTMLResponse)
 async def Page(request: Request):#, ncnt_people: str, current_time: str, standard_time: str):
     check()
-    current_time = datetime.now()  # 실시간 시간 측정
+    current_time = datetime.now()  # 실시간 시간 측정 
     current_time = str(current_time)[0:21]  # 필요한 부분 가공
     return templates.TemplateResponse("new.html", {"request": request, "counting": ncnt_people, "time": current_time, "old_time": standard_time})  # FastAPI로 new.html에 변수 값 전달
 
