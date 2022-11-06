@@ -24,10 +24,10 @@ output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # ============ Function ============ 
 
-def sql_recorder(Now_people, Now_Time):
+def sql_recorder(Now_Time, Now_people):
   conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="nCntDB", charset="utf8")
   cur=conn.cursor()
-#   cur.execute("CREATE  TABLE userTable (people_num INT, time char(30))")
+#   cur.execute("CREATE  TABLE userTable (time char(30), people_num INT)")
   cur.execute("INSERT INTO userTable VALUES('{0}', '{1}')".format(Now_Time, Now_people))
   conn.commit()
   conn.close()
@@ -107,12 +107,18 @@ def machine():
     frame = yolo(frame=frame, size=size_list[2], score_threshold=0.4, nms_threshold=0.4)  # 이미지 분석
     with open("nCnt.txt", "w", encoding = "utf8") as report_file:
         report_file.write("{0}/{1}".format(ncnt_people,standard_time))
-        sql_recorder(ncnt_people, DB_time) 
+        sql_recorder(DB_time, ncnt_people) 
         print(ncnt_people)
 
 
 
 # ============ Machine ============ 
+
+conn = pymysql.connect(host="127.0.0.1", user="root", password="MySQLhelena5863*", db="nCntDB", charset="utf8")
+cur=conn.cursor()
+cur.execute("CREATE  TABLE userTable (time char(30), people_num INT)")
+conn.commit()
+conn.close()
 
 while True:
     machine()
