@@ -1,0 +1,1 @@
+DROP TABLE  if exists 테이블이름;  # 테이블 삭제
